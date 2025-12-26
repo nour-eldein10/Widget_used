@@ -1,0 +1,35 @@
+ difference between transform and matrix :
+
+
+Transform.rotate(), Transform.scale(), Transform.translate() = SIMPLE widgets (do one thing)
+
+Transform() with Matrix4 = COMPLEX widget (can do multiple things at once)
+
+thats why you use transform you can't make alot of animations ,then matrix4 solve these 
+
+
+usage:
+
+transform -> when apply animatoin on different obejects 
+
+matrix4 -> apply more than animtation to same object
+
+
+important notes:
+
+transform -> Order matters when use rotate then translate or otherwrise
+matrix4 ->operations happen in REVERSE order (last operation happens first)!
+
+
+Structure:
+
+Matrix4.identity() = 
+[1, 0, 0, 0]  // X: no change
+[0, 1, 0, 0]  // Y: no change  
+[0, 0, 1, 0]  // Z: no change
+[0, 0, 0, 1]  // Perspective: no change
+
+
+
+Complete Comparison Table:
+
