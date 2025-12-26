@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: RotatingSidebar()));
+
+class RotatingSidebar extends StatefulWidget {
+  @override
+  _RotatingSidebarState createState() => _RotatingSidebarState();
+}
+
+class _RotatingSidebarState extends State<RotatingSidebar> 
+    with SingleTickerProviderStateMixin {
+  
+  late AnimationController _controller;
+  bool _isSidebarOpen = false;
+  
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 600),
+      vsync: this,
+    );
+  }
+  
+  void _toggleSidebar() {
+    setState(() {
+      _isSidebarOpen = !_isSidebarOpen;
+      if (_isSidebarOpen) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // SIDEBAR (rotates in from left)
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..translate(-200.0 + (_controller.value * 200.0), 0.0) // Slide
+                  ..rotateY(-1.57 + (_controller.value * 1.57)), // Rotate 90°
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: 200,
+                  color: Colors.blue[900],
+                  child: Column(
+                    children: [
+                      SizedBox(height: 100),
+                      Text(
+                        'MENU',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      ListTile(
+                        leading: Icon(Icons.home, color: Colors.white),
+                        title: Text('Home', style: TextStyle(color: Colors.white)),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.settings, color: Colors.white),
+                        title: Text('Settings', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          
+          // MAIN CONTENT (moves and rotates with sidebar)
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..translate(_controller.value * 150.0, 0.0) // Move right
+                  ..rotateY(_controller.value * 0.3), // Slight 3D rotation
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.grey[900],
+                  child: Column(
+                    children: [
+                      // App Bar
+                      AppBar(
+                        leading: IconButton(
+                          icon: Icon(Icons.menu),
+                          onPressed: _toggleSidebar,
+                        ),
+                        title: Text('My App'),
+                      ),
+                      
+                      // Main Content
+                      Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.star,
+                                    size: 80,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: _toggleSidebar,
+                                child: Text(_isSidebarOpen ? 'Close Menu' : 'Open Menu'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+  
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
