@@ -56,3 +56,15 @@ void main() {
   );
 }
 
+
+//not work on 3dmodels
+
+// The issue is that you're trying to use PhysicalModel with elevation inside a container that already has its own shadow and is being transformed. When you apply 3D transformations (like rotateY), the elevation/shadows don't transform properly in 3D space.
+
+// The Problem:
+// Transform breaks Material/PhysicalModel shadows: When you rotate widgets in 3D, the Material Design elevation system doesn't rotate with it properly.
+
+// Layering issues: The container already has BoxShadow, and adding PhysicalModel inside it creates conflicting shadow systems.
+
+// 3D perspective: True 3D shadows require proper perspective, which BoxShadow doesn't provide.
+
