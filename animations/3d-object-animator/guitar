@@ -1,0 +1,43 @@
+_build3dObject() => Positioned(
+        top: 0.1 * _screen.height,
+        bottom: 0.22 * _screen.height,
+        left: _maxSlide - _screen.width * 0.5,
+        right: _screen.width * 0.85 - _maxSlide,
+        child: Container(
+          clipBehavior: Clip.none,
+          child: AnimatedBuilder(
+            animation: _objAnimator,
+            builder: (context, child) {
+              // Calculate which of 120 frames to show
+              int frameNumber = (_objAnimator.value * 120).ceil();
+              frameNumber = frameNumber.clamp(1, 240); // 1-120
+
+              // Format frame number with leading zeros (0001, 0002, ..., 0120)
+              String frameStr = frameNumber.toString().padLeft(4, '0');
+
+              return Transform(
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+
+                  // Position for hanging
+                  ..translate(
+                    _objAnimator.value * 8,
+                    0.0,
+                    _objAnimator.value * 50,
+                  )
+
+                  // Optional: Add slight tilt
+                  ..rotateX(-pi / 24), // -7.5° tilt
+
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/guitarSequence/$frameStr.png',
+                  fit: BoxFit.contain,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              );
+            },
+          ),
+        ),
+      );
